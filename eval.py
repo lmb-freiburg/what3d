@@ -1,53 +1,54 @@
 import os
-import shapenet
+import util
+import open3d
 import argparse
 
-def get_point_cloud(pc_path):
-    pc = open3d.read_point_cloud(pc_path)
-    return np.asarray(pc.points)
-
-def calculate_fscore(gt, pr, th=0.01):
-    d1 = open3d.compute_point_cloud_to_point_cloud_distance(gt, pr)
-    d2 = open3d.compute_point_cloud_to_point_cloud_distance(pr, gt)
-    
-    if len(d1) and len(d2):
-        recall = float(sum(d < th for d in d2)) / float(len(d2))
-        precision = float(sum(d < th for d in d1)) / float(len(d1))
-
-        if recall+precision > 0:
-            fscore = 2 * recall * precision / (recall + precision)
-        else:
-            fscore = 0
-    else:
-        fscore = 0
-        precision = 0
-        recall = 0
-
-    return fscore, precision, recall
+CUBE_SIDE_LEN = 1.0
 
 parser = argparse.ArgumentParser(description='F-score evaluation')
 parser.add_argument('--pr_path', type=str, required=True)
 parser.add_argument('--out_path', type=str)
+parser.add_argument('--th', type=float)
 args = parser.parse_args()
 
 if args.out_path is None:
     out_path = "fscore"
     os.mkdir(out_path)
 
-class_list = shapenet.get_class_list()
+if args.th is None:
+    threshold_list = [CUBE_SIDE_LEN/200, CUBE_SIDE_LEN/100,
+                      CUBE_SIDE_LEN/50, CUBE_SIDE_LEN/20,
+                      CUBE_SIDE_LEN/10, CUBE_SIDE_LEN/5]
+else:
+    threshold_list = [args.th]
+
+class_list = util.get_class_list()
 for cat in class_list:
     os.mkdir(os.path.join(out_path, cat))
-    model_list = shapenet.get_class_models(cat)
+    model_list = util.get_class_models(cat)
 
     f_f = open(os.path.join(out_path, cat, "fscore.txt"), "w")
     f_p = open(os.path.join(out_path, cat, "precision.txt"), "w")
     f_r = open(os.path.join(out_path, cat, "recall.txt"), "w")
 
     for model in model_list:
-        for v in range(shapenet.VIEW_COUNT):
-            gt = get_point_cloud(os.path.join(shapenet.POINTS_PATH, cat, model, str(v) + ".ply"))
-            pr = get_point_cloud(os.path.join(args.pr_path, cat, model, str(v) + ".ply"))
-            f, p, r = calculate_fscore(gt, pr)
+        for v in range(util.VIEW_COUNT):
+            gt = open3d.read_point_cloud(os.path.join(util.POINTS_PATH, cat, model, str(v) + ".ply"))
+            pr = open3d.read_point_cloud(os.path.join(args.pr_path, cat, model, str(v) + ".ply"))
+            
+            f_f.write(model + "_" + str(v))
+            f_p.write(model + "_" + str(v))
+            f_r.write(model + "_" + str(v))
+            
+            for th in threshold_list:
+                f, p, r = util.calculate_fscore(gt, pr, th=th)
+                f_f.write(" " + str(f))
+                f_p.write(" " + str(p))
+                f_r.write(" " + str(r))
+            
+            f_f.write("\n")
+            f_p.write("\n")
+            f_r.write("\n")
     
     f_f.close()
     f_p.close()
