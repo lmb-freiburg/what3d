@@ -55,13 +55,13 @@ If you use our code for your research, please cite the following papers
 	author    = {Maxim Tatarchenko* and Stephan R. Richter* and René Ranftl and Zhuwen Li and Vladlen Koltun and Thomas Brox},
 	title     = {What Do Single-view 3D Reconstruction Networks Learn?},
 	journal   = {CVPR},
-	year      = {2019},
+	year      = {2019}
 }
 
 @article{open3d_arxiv,
 	author    = {Qian-Yi Zhou and Jaesik Park and Vladlen Koltun},
 	title     = {{Open3D}: {A} Modern Library for {3D} Data Processing},
 	journal   = {arXiv:1801.09847},
-	year      = {2018},
+	year      = {2018}
 }
 ```

@@ -3,7 +3,7 @@ import open3d
 import numpy as np
 import copy
 import matplotlib.pyplot as plt
-from .path_config import *
+from path_config import *
 
 CLASSES_FILE_PATH = os.path.join(BASE_DATA_PATH, "classes.txt")
 LISTS_PATH = os.path.join(BASE_DATA_PATH, "lists")
@@ -73,7 +73,9 @@ def visualize_distance(gt, pr, max_distance=None):
         print("MAX distance: " + str(max_distance))
 
     precision_pc = assign_colors(s, np.asarray(d1) / max_distance)
+    print("Showing precision...")
     open3d.draw_geometries([precision_pc])
 
     recall_pc = assign_colors(t, np.asarray(d2) / max_distance)
+    print("Showing recall...")
     open3d.draw_geometries([recall_pc])

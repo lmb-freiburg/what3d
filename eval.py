@@ -1,9 +1,12 @@
 import os
 import util
+import tqdm
 import open3d
 import argparse
 
 CUBE_SIDE_LEN = 1.0
+
+open3d.set_verbosity_level(open3d.utility.VerbosityLevel.Error)
 
 parser = argparse.ArgumentParser(description='F-score evaluation')
 parser.add_argument('--pr_path', type=str, required=True)
@@ -13,7 +16,9 @@ args = parser.parse_args()
 
 if args.out_path is None:
     out_path = "fscore"
-    os.mkdir(out_path)
+else:
+    out_path = args.out_path
+os.mkdir(out_path)
 
 if args.th is None:
     threshold_list = [CUBE_SIDE_LEN/200, CUBE_SIDE_LEN/100,
@@ -31,7 +36,8 @@ for cat in class_list:
     f_p = open(os.path.join(out_path, cat, "precision.txt"), "w")
     f_r = open(os.path.join(out_path, cat, "recall.txt"), "w")
 
-    for model in model_list:
+    for i in tqdm.tqdm(range(len(model_list))):
+        model = model_list[i]
         for v in range(util.VIEW_COUNT):
             gt = open3d.read_point_cloud(os.path.join(util.POINTS_PATH, cat, model, str(v) + ".ply"))
             pr = open3d.read_point_cloud(os.path.join(args.pr_path, cat, model, str(v) + ".ply"))

@@ -2,6 +2,8 @@ import open3d
 import argparse
 import util
 
+open3d.set_verbosity_level(open3d.utility.VerbosityLevel.Error)
+
 parser = argparse.ArgumentParser(description='Precision/recall visualization')
 parser.add_argument('--gt', type=str, required=True)
 parser.add_argument('--pr', type=str, required=True)
