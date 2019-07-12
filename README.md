@@ -2,7 +2,7 @@
 
 ![thumbnail](img/thumb.png)
 
-Evaluation and visualization code accompanying the CVPR'19 [paper](https://lmb.informatik.uni-freiburg.de/Publications/2019/TB19/paper-s3d.pdf) "What Do Single-view 3D Reconstruction Networks Learn?" by M. Tatarchenko*, S. R. Richter*, R. Ranftl, Z. Li,V. Koltun, and T. Brox (*indicates equal contribution).
+Evaluation and visualization code accompanying the CVPR'19 paper ["What Do Single-view 3D Reconstruction Networks Learn?"](https://lmb.informatik.uni-freiburg.de/Publications/2019/TB19/paper-s3d.pdf) by M. Tatarchenko*, S. R. Richter*, R. Ranftl, Z. Li, V. Koltun, and T. Brox (*indicates equal contribution).
 
 ### Dependencies
 
