@@ -12,7 +12,7 @@ Evaluation and visualization code accompanying the CVPR'19 paper ["What Do Singl
 
 ### Setup
 
-We provide multiple data modalities used for the **viewer-centered** experiments in our paper: voxel grids, point clouds, renderings and [train/test splits](https://lmb.informatik.uni-freiburg.de/data/what3d/splits.zip).
+We provide multiple data modalities used for the **viewer-centered** experiments in our paper: [voxel grids](https://lmb.informatik.uni-freiburg.de/data/what3d/voxels.zip), [point clouds](https://lmb.informatik.uni-freiburg.de/data/what3d/points.zip), [renderings](https://lmb.informatik.uni-freiburg.de/data/what3d/renderings.zip) and [train/test splits](https://lmb.informatik.uni-freiburg.de/data/what3d/splits.zip).
 
 To run the F-score evaluation code, you will only need the *point clouds* and the *train/test splits*. Unpack the archives into your desired location and update the `BASE_DATA_PATH` variable in the `path_config.py` file with this location. The resulting structure of your data folder should look like
 
