@@ -34,6 +34,8 @@ $ python eval.py --pr_path path_to_your_predictions
 The `path_to_your_predictions` folder should contain the `.ply` point clouds organized in the same structure as the `data/points/` folder.
 By default, the F-score is calculated with the same threshold values as in the paper. If you want use a different threshold, you can do so by providing a `--th` parameter to the script. You can also specify the desired location for the results by setting the `--out_path` parameter. If you do not do it, the results will be stored in the `fscore` folder.
 
+If you want to evaluate the F-score for voxel grids, you need to first convert them into point clouds. There is a function `voxel_grid_to_mesh` in `util.py` which converts a voxel grid represented as a numpy array into an Open3D `TriangleMesh`. After this, you can sample the desired number of points from the mesh using the built-in Open3D functionality.
+
 ### Precision/recall visualization
 
 ![precision-recall](img/precision_recall.png)
