@@ -1,9 +1,10 @@
 import os
 import open3d
+import mcubes
 import numpy as np
 import copy
 import matplotlib.pyplot as plt
-from path_config import *
+from .path_config import *
 
 CLASSES_FILE_PATH = os.path.join(BASE_DATA_PATH, "classes.txt")
 LISTS_PATH = os.path.join(BASE_DATA_PATH, "lists")
@@ -25,6 +26,19 @@ def get_class_list():
 def get_class_models(category, mode="test"):
     model_list = read_txt_file(os.path.join(LISTS_PATH, category, mode + ".txt"))
     return model_list
+
+def voxel_grid_to_mesh(vox_grid):
+    sp = vox_grid.shape
+    if len(sp) != 3 or sp[0] != sp[1] or \
+       sp[1] != sp[2] or sp[0] == 0:
+        raise ValueError("Only non-empty cubic 3D grids are supported.")
+    padded_grid = np.pad(vox_grid, ((1,1),(1,1),(1,1)), 'constant')
+    m_vert, m_tri = mcubes.marching_cubes(padded_grid, 0)
+    m_vert = m_vert / (padded_grid.shape[0] - 1)
+    out_mesh = open3d.geometry.TriangleMesh()
+    out_mesh.vertices = open3d.utility.Vector3dVector(m_vert)
+    out_mesh.triangles = open3d.utility.Vector3iVector(m_tri)
+    return out_mesh
 
 def calculate_fscore(gt, pr, th=0.01):
     d1 = open3d.compute_point_cloud_to_point_cloud_distance(gt, pr)
