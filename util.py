@@ -1,4 +1,5 @@
 import os
+import typing
 import open3d
 import mcubes
 import numpy as np
@@ -6,28 +7,37 @@ import copy
 import matplotlib.pyplot as plt
 from .path_config import *
 
+
 CLASSES_FILE_PATH = os.path.join(BASE_DATA_PATH, "classes.txt")
 LISTS_PATH = os.path.join(BASE_DATA_PATH, "lists")
 BINVOX_PATH = os.path.join(BASE_DATA_PATH, "binvox")
 POINTS_PATH = os.path.join(BASE_DATA_PATH, "points")
 VIEW_COUNT = 5
 
-def read_txt_file(file_path):
+
+def read_txt_file(file_path: str) -> list:
+    '''Reads a .txt file and returns a list of lines.'''
     with open(file_path) as f:
         lines = f.readlines()
         lines = [l.rstrip() for l in lines]
     return lines
 
-def get_class_list():
+
+def get_class_list() -> list:
+    '''Returns the list of ShapeNet class names.'''
     lines = read_txt_file(CLASSES_FILE_PATH)
     lines = [l.split(" ")[0] for l in lines]
     return lines
 
-def get_class_models(category, mode="test"):
+
+def get_class_models(category: str, mode: str="test") -> list:
+    '''Returns the list of shape IDs for a class from the corresponding subset.'''
     model_list = read_txt_file(os.path.join(LISTS_PATH, category, mode + ".txt"))
     return model_list
 
-def voxel_grid_to_mesh(vox_grid):
+
+def voxel_grid_to_mesh(vox_grid: np.array) -> open3d.geometry.TriangleMesh:
+    '''Converts a voxel grid represented as a numpy array into a mesh.'''
     sp = vox_grid.shape
     if len(sp) != 3 or sp[0] != sp[1] or \
        sp[1] != sp[2] or sp[0] == 0:
@@ -40,7 +50,9 @@ def voxel_grid_to_mesh(vox_grid):
     out_mesh.triangles = open3d.utility.Vector3iVector(m_tri)
     return out_mesh
 
-def calculate_fscore(gt, pr, th=0.01):
+
+def calculate_fscore(gt: open3d.geometry.PointCloud, pr: open3d.geometry.PointCloud, th: float=0.01) -> typing.Tuple[float, float, float]:
+    '''Calculates the F-score between two point clouds with the corresponding threshold value.'''
     d1 = open3d.compute_point_cloud_to_point_cloud_distance(gt, pr)
     d2 = open3d.compute_point_cloud_to_point_cloud_distance(pr, gt)
     
@@ -59,7 +71,9 @@ def calculate_fscore(gt, pr, th=0.01):
 
     return fscore, precision, recall
 
-def assign_colors(pc, dist, cmap_name='hot'):
+
+def assign_colors(pc: open3d.geometry.PointCloud, dist: np.array, cmap_name: str='hot') -> open3d.geometry.PointCloud:
+    '''Assigns per-point colors to a point cloud given a distance array.'''
     cmap = plt.cm.get_cmap(cmap_name)
     points = np.asarray(pc.points)
     colors = np.zeros(points.shape)
@@ -75,7 +89,9 @@ def assign_colors(pc, dist, cmap_name='hot'):
 
     return out_pc
 
-def visualize_distance(gt, pr, max_distance=None):
+
+def visualize_distance(gt: open3d.geometry.PointCloud, pr: open3d.geometry.PointCloud, max_distance: float=None) -> None:
+    '''Displays precision and recall based on the F-score between two point clouds.'''
     s = copy.deepcopy(gt)
     t = copy.deepcopy(pr)
 
@@ -88,8 +104,8 @@ def visualize_distance(gt, pr, max_distance=None):
 
     precision_pc = assign_colors(s, np.asarray(d1) / max_distance)
     print("Showing precision...")
-    open3d.draw_geometries([precision_pc])
+    open3d.draw_open3d.geometrymetries([precision_pc])
 
     recall_pc = assign_colors(t, np.asarray(d2) / max_distance)
     print("Showing recall...")
-    open3d.draw_geometries([recall_pc])
+    open3d.draw_open3d.geometrymetries([recall_pc])

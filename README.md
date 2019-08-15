@@ -9,6 +9,7 @@ Evaluation and visualization code accompanying the CVPR'19 paper ["What Do Singl
 * [Open 3D](https://github.com/intel-isl/Open3D)
 * numpy
 * matplotlib
+* mcubes
 
 ### Setup
 
